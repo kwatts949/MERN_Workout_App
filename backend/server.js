@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const mongoose = require("mongoose");
 const workoutRoutes = require("./routes/workouts"); // require routes file
 
 // create express app
@@ -15,9 +16,12 @@ app.use((req, res, next) => {
 //routes
 app.use("/api/workouts", workoutRoutes);
 
-// listen for requests
-app.listen(process.env.PORT, () => {
-  console.log("listening on port 4000");
-}); // nodemon server.js listens and reflects updates automatically.
+// connect to db
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {app.listen(process.env.PORT, () => {console.log('connected to db & listening on port 4000')})})
+  .catch((error) => {
+    console.log(error);
+  });
 
 //process.env // load .env file
